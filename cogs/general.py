@@ -17,7 +17,7 @@ class GeneralCog(commands.Cog):
         embed = discord.Embed(title='🔖 **Commands**', description='All of the available commands for the bot.', colour=discord.Colour.blue())
         embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon_url)
         
-        cog = self.bot.get_cog('GeneralCog')
+        cog = self.bot.get_cog('GeneralCog') # grab this cog
 
         for command in cog.get_commands(): # iterate through command objs
 
@@ -50,7 +50,7 @@ class GeneralCog(commands.Cog):
             async with session.get(roblox) as resp:
                 roblox_data = await resp.json(content_type=None)
 
-                if "success" in roblox_data.keys():
+                if "success" in roblox_data.keys(): # success key only appears if there is a failure..? 
                     embed = discord.Embed(title=f'**User does not exist.**', colour=discord.Colour.red())
                     await ctx.send(embed=embed)
                 else:
@@ -60,11 +60,11 @@ class GeneralCog(commands.Cog):
                 embed = discord.Embed(title=f'📊 **{roblox_data["Username"]}\'s Statistics**', description='Risky Strats Metrics', colour=discord.Colour.blue(), timestamp=datetime.datetime.utcnow())
                 embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
                 embed.set_footer(text='Risky Strats', icon_url=self.bot.user.avatar_url)
-                embed.set_thumbnail(url=f'https://www.roblox.com/headshot-thumbnail/image?userId={roblox_data["Id"]}&width=420&height=420&format=png')
+                embed.set_thumbnail(url=f'https://www.roblox.com/headshot-thumbnail/image?userId={roblox_data["Id"]}&width=420&height=420&format=png') # add roblox user's profile picture
 
                 async with session.get(riskyURL) as resp:
                     data = await resp.json(content_type=None)
-                    if not data["success"]:
+                    if not data["success"]: # check if information exists for user
                         embed.add_field(name='**No data available**', value='There are no recorded statistics for this user.', inline=False) 
                     else:
                         data = data["data"]
@@ -91,15 +91,15 @@ class GeneralCog(commands.Cog):
         if leader_type:
             leader_type = leader_type.upper()
 
-        if leader_type == 'DAILY':
+        if leader_type in ['DAILY', 'DAY', 'TODAY']:
             select = ['Daily', 'Daily']
-        elif leader_type == 'WEEKLY':
+        elif leader_type in ['WEEKLY', 'WEEK']:
             select = ['Weekly', 'Weekly']
         elif leader_type in ['ALL', 'ALL TIME', 'LIFETIME', 'EVERY', 'ALLTIME']:
             select = ['All Time', 'AllTime']
-        else:
+            
+        else: # default board is weekly
             select = ['Weekly', 'Weekly']
-            name = 'Weekly'
 
         clvurl = f'https://clv.cloud/risky/getLeaderboard'
 
@@ -109,12 +109,12 @@ class GeneralCog(commands.Cog):
                 data = clv_data["data"]
                 boards = data["Boards"]
 
-            sortedBoard = sorted(boards[select[1]].items(), key=lambda x: x[1], reverse=True)
-            sortedBoard = sortedBoard[:10]
+            sortedBoard = sorted(boards[select[1]].items(), key=lambda x: x[1], reverse=True) # sort keys by values in ascending order
+            sortedBoard = sortedBoard[:10] # first 10 results only (top 10 players)
 
             playerList = []
             
-            for player_id, score in sortedBoard:
+            for player_id, score in sortedBoard: # iterate key, value
                 robloxurl = f'https://api.roblox.com/users/{player_id}'
                 async with session.get(robloxurl) as resp:
                     roblox_data = await resp.json(content_type=None)
@@ -126,7 +126,7 @@ class GeneralCog(commands.Cog):
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
             embed.set_footer(text='Risky Strats', icon_url=self.bot.user.avatar_url)
 
-            for idx, playerObj in enumerate(playerList):
+            for idx, playerObj in enumerate(playerList): # iterate with idx and obj
                 idx += 1
                 emoji = ''
 
