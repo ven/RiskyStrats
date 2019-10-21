@@ -8,8 +8,40 @@ class GeneralCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['risky'])
-    async def stats(self, ctx, name: str):
+    @commands.command(
+        name='help',
+        help="Displays this help menu."
+    )
+    async def _help(self, ctx):
+
+        embed = discord.Embed(title='🔖 **Commands**', description='All of the available commands for the bot.', colour=discord.Colour.blue())
+        embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon_url)
+        
+        cog = self.bot.get_cog('GeneralCog')
+
+        for command in cog.get_commands(): # iterate through command objs
+
+            if command.usage:
+                usage = command.usage
+            else:
+                usage = 'None'
+
+            if command.aliases:
+                aliases = ", ".join(command.aliases)
+            else:
+                aliases = 'None'
+
+            embed.add_field(name=f'**{command.name}**', value=f'• **Description**: {command.help}\n• **Usage**: {usage}\n• **Aliases**: {aliases}', inline=False)
+
+        await ctx.send(embed=embed)
+
+    @commands.command(
+        name='stats',
+        usage='<roblox name>',
+        aliases=['risky'],
+        help="Displays a player's Risky Strats statistics."
+        )
+    async def _stats(self, ctx, name: str):
 
         roblox = f'https://api.roblox.com/users/get-by-username?username={name}'
         riskyURL = None
@@ -48,8 +80,13 @@ class GeneralCog(commands.Cog):
 
                     await ctx.send(embed=embed)
     
-    @commands.command(aliases=['board', 'leader'])
-    async def leaderboard(self, ctx, *, leader_type: str=None):
+    @commands.command(
+        name='leaderboard',
+        usage='<daily/weekly/all time>',
+        aliases=['board', 'leader'],
+        help="Displays the daily, weekly, or all time leaderboard for Risky Strats."
+    )
+    async def _leaderboard(self, ctx, *, leader_type: str=None):
 
         if leader_type:
             leader_type = leader_type.upper()
