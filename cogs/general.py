@@ -31,7 +31,7 @@ class GeneralCog(commands.Cog):
             else:
                 aliases = 'None'
 
-            embed.add_field(name=f'**{command.name}**', value=f'• **Description**: {command.help}\n• **Usage**: {usage}\n• **Aliases**: {aliases}', inline=False)
+            embed.add_field(name=f'**{ctx.prefix}{command.name}**', value=f'• **Description**: {command.help}\n• **Usage**: {usage}\n• **Aliases**: {aliases}', inline=False)
 
         await ctx.send(embed=embed)
 
@@ -144,7 +144,7 @@ class GeneralCog(commands.Cog):
     @commands.command(
         name='servers',
         aliases=['players'],
-        help="Displays the current Risky servers and player amounts."
+        help="Displays the current Risky Strats servers and player amounts."
     )
     async def _servers(self, ctx):
 
@@ -165,7 +165,10 @@ class GeneralCog(commands.Cog):
                     for idx, server in enumerate(data): # iterate with idx and obj
                         idx += 1
 
-                        embed.add_field(name=f'🖥 **Server {idx}**', value=f'🔎 {server["playing"]}/10 players\n🏓 {server["ping"]}ms', inline=False)
+                        if "ping" not in server.keys():
+                            embed.add_field(name='**No open servers.**', value='There is 0 open servers.')
+                        else:
+                            embed.add_field(name=f'🖥 **Server {idx}**', value=f'🔎 {server["playing"]}/10 players\n🏓 {server["ping"]}ms', inline=False)
                 
                 await ctx.send(embed=embed)
 
