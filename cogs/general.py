@@ -165,17 +165,10 @@ class GeneralCog(commands.Cog):
                     for idx, server in enumerate(data): # iterate with idx and obj
                         idx += 1
 
-<<<<<<< HEAD
                         if "ping" not in server.keys():
                             embed.add_field(name='**No open servers.**', value='There is 0 open servers.')
                         else:
                             embed.add_field(name=f'🖥 **Server {idx}**', value=f'🔎 {server["playing"]}/10 players\n🏓 {server["ping"]}ms', inline=False)
-=======
-                        if "ping" in server.keys():
-                            ping = f'\n🏓 {server["ping"]}ms'
-
-                        embed.add_field(name=f'🖥 **Server {idx}**', value=f'🔎 {server["playing"]}/10 players{ping}', inline=False)
->>>>>>> 2b89f2d996c74e704aeb179dc65cd591d4d5909e
                 
                 await ctx.send(embed=embed)
 
