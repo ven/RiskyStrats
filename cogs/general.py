@@ -141,5 +141,33 @@ class GeneralCog(commands.Cog):
 
             await ctx.send(embed=embed)
 
+    @commands.command(
+        name='servers',
+        aliases=['players'],
+        help="Displays the current Risky servers and player amounts."
+    )
+    async def _servers(self, ctx):
+
+        robloxurl = f'https://games.roblox.com/v1/games/316264464/servers/Public?limit=10&sortOrder=Asc' # server list endpoint
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(robloxurl) as resp:
+                data = await resp.json(content_type=None)
+                data = data["data"]
+
+                embed = discord.Embed(title=f'📋 **Risky Strats Servers**', description='A list of all active servers and their player amounts.', colour=discord.Colour.blue(), timestamp=datetime.datetime.utcnow())
+                embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.avatar_url)
+
+                if not data:
+                    embed.add_field(name='**No open servers.**', value='There is 0 open servers.')
+                
+                else:
+                    for idx, server in enumerate(data): # iterate with idx and obj
+                        idx += 1
+
+                        embed.add_field(name=f'🖥 **Server {idx}**', value=f'🔎 {server["playing"]}/10 players\n🏓 {server["ping"]}ms', inline=False)
+                
+                await ctx.send(embed=embed)
+
 def setup(bot):
     bot.add_cog(GeneralCog(bot))
