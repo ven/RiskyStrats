@@ -165,7 +165,10 @@ class GeneralCog(commands.Cog):
                     for idx, server in enumerate(data): # iterate with idx and obj
                         idx += 1
 
-                        embed.add_field(name=f'🖥 **Server {idx}**', value=f'🔎 {server["playing"]}/10 players\n🏓 {server["ping"]}ms', inline=False)
+                        if "ping" in server.keys():
+                            ping = f'\n🏓 {server["ping"]}ms'
+
+                        embed.add_field(name=f'🖥 **Server {idx}**', value=f'🔎 {server["playing"]}/10 players{ping}', inline=False)
                 
                 await ctx.send(embed=embed)
 
