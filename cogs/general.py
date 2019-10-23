@@ -256,7 +256,7 @@ class GeneralCog(commands.Cog):
                             playerText = ''
                             playerText = f"\n🔎 {players} ({len(data[server]["players"])}/10 players)"
 
-                        if data[server]["isVip"] == 'true': # bool is a string
+                        if data[server]["isVip"]:
                             serverType = "VIP"
                         else:
                             serverType = "PUBLIC"
