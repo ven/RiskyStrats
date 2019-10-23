@@ -236,7 +236,7 @@ class GeneralCog(commands.Cog):
                     colour=discord.Colour.blue(), 
                     timestamp=datetime.datetime.utcnow()
                 )
-                
+
                 embed.set_footer(
                     text=self.bot.user.name, 
                     icon_url=self.bot.user.avatar_url
@@ -245,13 +245,16 @@ class GeneralCog(commands.Cog):
                 if not data["success"]: # not successful, no open servers.
                     embed.add_field(
                         name='**No open servers.**', 
-                        value='There is 0 open servers.'
+                        value='There are 0 open servers.'
                     )
                 else:
                     data = data["data"]
 
                     for server in data:
-                        players = ", ".join([x[0] for x in data[server]["players"]]) # string of comma separated player names
+                        if "players" in data[server].keys():
+                            players = ", ".join([x[0] for x in data[server]["players"]]) # string of comma separated player names
+                            playerText = ''
+                            playerText = f"\n🔎 {players} ({len(data[server]["players"])}/10 players)"
 
                         if data[server]["isVip"] == 'true': # bool is a string
                             serverType = "VIP"
@@ -259,18 +262,17 @@ class GeneralCog(commands.Cog):
                             serverType = "PUBLIC"
 
                         if data[server]["gamemode"] == 'Empire':
-                            emoji = '💣'
+                            emoji = '⚔'
                         else: # regicide.. 
                             emoji = '👑'
 
                         embed.add_field(
                             name=f'🖥 **Server {data[server]["id"].upper()} - {serverType}**', 
-                            value=f'{emoji} {data[server]["gamemode"]}\n🕓 {data[server]["elapsedTime"]} - {data[server]["stage"]}\n🔎 {players} ({len(data[server]["players"])}/10 players)', 
+                            value=f'{emoji} {data[server]["gamemode"]}\n🕓 {data[server]["elapsedTime"]} - {data[server]["stage"]} Stage{playerText}', 
                             inline=False
                         )
                 
                 await ctx.send(embed=embed)
-
 
 def setup(bot):
     bot.add_cog(GeneralCog(bot))
