@@ -14,8 +14,16 @@ class GeneralCog(commands.Cog):
     )
     async def _help(self, ctx):
 
-        embed = discord.Embed(title='🔖 **Commands**', description='All of the available commands for the bot.', colour=discord.Colour.blue())
-        embed.set_footer(text=ctx.guild.name, icon_url=ctx.guild.icon_url)
+        embed = discord.Embed(
+            title='🔖 **Commands**', 
+            description='All of the available commands for the bot.', 
+            colour=discord.Colour.blue()
+        )
+
+        embed.set_footer(
+            text=ctx.guild.name, 
+            icon_url=ctx.guild.icon_url
+        )
         
         cog = self.bot.get_cog('GeneralCog') # grab this cog
 
@@ -31,7 +39,11 @@ class GeneralCog(commands.Cog):
             else:
                 aliases = 'None'
 
-            embed.add_field(name=f'**{ctx.prefix}{command.name}**', value=f'• **Description**: {command.help}\n• **Usage**: {usage}\n• **Aliases**: {aliases}', inline=False)
+            embed.add_field(
+                name=f'**{ctx.prefix}{command.name}**', 
+                value=f'• **Description**: {command.help}\n• **Usage**: {usage}\n• **Aliases**: {aliases}', 
+                inline=False
+            )
 
         await ctx.send(embed=embed)
 
@@ -51,32 +63,79 @@ class GeneralCog(commands.Cog):
                 roblox_data = await resp.json(content_type=None)
 
                 if "success" in roblox_data.keys(): # success key only appears if there is a failure..? 
-                    embed = discord.Embed(title=f'**User does not exist.**', colour=discord.Colour.red())
+                    embed = discord.Embed(
+                        title=f'**User does not exist.**', 
+                        colour=discord.Colour.red()
+                    )
                     await ctx.send(embed=embed)
                 else:
                     riskyURL = f'https://clv.cloud/risky/getStats?UserId={roblox_data["Id"]}'
             
             if riskyURL:
-                embed = discord.Embed(title=f'📊 **{roblox_data["Username"]}\'s Statistics**', description='Risky Strats Metrics', colour=discord.Colour.blue(), timestamp=datetime.datetime.utcnow())
-                embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-                embed.set_footer(text='Risky Strats', icon_url=self.bot.user.avatar_url)
-                embed.set_thumbnail(url=f'https://www.roblox.com/headshot-thumbnail/image?userId={roblox_data["Id"]}&width=420&height=420&format=png') # add roblox user's profile picture
+
+                embed = discord.Embed(
+                    title=f'📊 **{roblox_data["Username"]}\'s Statistics**', 
+                    description='Risky Strats Metrics', 
+                    colour=discord.Colour.blue(), 
+                    timestamp=datetime.datetime.utcnow()
+                )
+
+                embed.set_author(
+                    name=ctx.author.name, 
+                    icon_url=ctx.author.avatar_url
+                )
+
+                embed.set_footer(
+                    text='Risky Strats', 
+                    icon_url=self.bot.user.avatar_url
+                )
+
+                embed.set_thumbnail(
+                    url=f'https://www.roblox.com/headshot-thumbnail/image?userId={roblox_data["Id"]}&width=420&height=420&format=png' # add roblox user's profile picture
+                )
 
                 async with session.get(riskyURL) as resp:
                     data = await resp.json(content_type=None)
                     if not data["success"]: # check if information exists for user
-                        embed.add_field(name='**No data available**', value='There are no recorded statistics for this user.', inline=False) 
+                        embed.add_field(
+                            name='**No data available**', 
+                            value='There are no recorded statistics for this user.', 
+                            inline=False
+                        ) 
                     else:
                         data = data["data"]
 
                         Losses = data["TotalMatches"] - data["Wins"]
 
-                        embed.add_field(name='🏆 **Wins**', value=data["Wins"])
-                        embed.add_field(name='🖐 **Losses**', value=Losses)
-                        embed.add_field(name='⏳ **Total Matches**', value=data["TotalMatches"])
-                        embed.add_field(name='📈 **W/L Ratio**', value=round((data["Wins"] / Losses), 2))
-                        embed.add_field(name='🗓 **Last Win**', value=humanize.naturaltime(datetime.datetime.fromtimestamp(data["LastWin"])))
-                        embed.add_field(name='💠 **Points**', value=data["Points"])
+                        embed.add_field(
+                            name='🏆 **Wins**', 
+                            value=data["Wins"]
+                        )
+
+                        embed.add_field(
+                            name='🖐 **Losses**', 
+                            value=Losses
+                        )
+
+                        embed.add_field(
+                            name='⏳ **Total Matches**', 
+                            value=data["TotalMatches"]
+                        )
+
+                        embed.add_field(
+                            name='📈 **W/L Ratio**', 
+                            value=round((data["Wins"] / Losses), 2)
+                        )
+
+                        embed.add_field(
+                            name='🗓 **Last Win**', 
+                            value=humanize.naturaltime(datetime.datetime.fromtimestamp(data["LastWin"]))
+                        )
+
+                        embed.add_field(
+                            name='💠 **Points**',
+                            value=data["Points"]
+                        )
 
                     await ctx.send(embed=embed)
     
@@ -122,9 +181,22 @@ class GeneralCog(commands.Cog):
 
                     playerList.append([name, score])
 
-            embed = discord.Embed(title=f'🔖 **Risky Strats Leaderboard - {select[0]}**', description=f'{select[0]} leaderboard of Risky players.', colour=discord.Colour.blue(), timestamp=datetime.datetime.utcnow())
-            embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-            embed.set_footer(text='Risky Strats', icon_url=self.bot.user.avatar_url)
+            embed = discord.Embed(
+                title=f'🔖 **Risky Strats Leaderboard - {select[0]}**', 
+                description=f'{select[0]} leaderboard of Risky players.', 
+                colour=discord.Colour.blue(), 
+                timestamp=datetime.datetime.utcnow()
+            )
+
+            embed.set_author(
+                name=ctx.author.name, 
+                icon_url=ctx.author.avatar_url
+            )
+
+            embed.set_footer(
+                text='Risky Strats', 
+                icon_url=self.bot.user.avatar_url
+            )
 
             for idx, playerObj in enumerate(playerList): # iterate with idx and obj
                 idx += 1
@@ -137,10 +209,14 @@ class GeneralCog(commands.Cog):
                 elif idx == 3:
                     emoji = '🥉'
                 
-                embed.add_field(name=f'{emoji} **{playerObj[0]}**', value=f'{playerObj[1]} wins', inline=False)
+                embed.add_field(
+                    name=f'{emoji} **{playerObj[0]}**', 
+                    value=f'{playerObj[1]} wins', 
+                    inline=False
+                )
 
             await ctx.send(embed=embed)
-
+    
     @commands.command(
         name='servers',
         aliases=['players'],
@@ -148,27 +224,50 @@ class GeneralCog(commands.Cog):
     )
     async def _servers(self, ctx):
 
-        robloxurl = f'https://games.roblox.com/v1/games/316264464/servers/Public?limit=10&sortOrder=Asc' # server list endpoint
+        clvurl = 'http://clv.cloud/risky/getServers'
 
         async with aiohttp.ClientSession() as session:
-            async with session.get(robloxurl) as resp:
+            async with session.get(clvurl) as resp:
                 data = await resp.json(content_type=None)
-                data = data["data"]
 
-                embed = discord.Embed(title=f'📋 **Risky Strats Servers**', description='A list of all active servers and their player amounts.', colour=discord.Colour.blue(), timestamp=datetime.datetime.utcnow())
-                embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.avatar_url)
+                embed = discord.Embed(
+                    title=f'📋 **Risky Strats Servers**', 
+                    description='A list of information about currently active servers.', 
+                    colour=discord.Colour.blue(), 
+                    timestamp=datetime.datetime.utcnow()
+                )
 
-                if not data:
-                    embed.add_field(name='**No open servers.**', value='There is 0 open servers.')
-                
+                embed.set_footer(
+                    text=self.bot.user.name, 
+                    icon_url=self.bot.user.avatar_url
+                )
+
+                if not data["success"]: # not successful, no open servers.
+                    embed.add_field(
+                        name='**No open servers.**', 
+                        value='There is 0 open servers.'
+                    )
                 else:
-                    for idx, server in enumerate(data): # iterate with idx and obj
-                        idx += 1
+                    data = data["data"]
 
-                        if "ping" not in server.keys():
-                            embed.add_field(name='**No open servers.**', value='There is 0 open servers.')
+                    for server in data:
+                        players = ", ".join([x[0] for x in data[server]["players"]]) # string of comma separated player names
+
+                        if data[server]["isVip"] == 'true': # bool is a string
+                            serverType = "VIP"
                         else:
-                            embed.add_field(name=f'🖥 **Server {idx}**', value=f'🔎 {server["playing"]}/10 players\n🏓 {server["ping"]}ms', inline=False)
+                            serverType = "PUBLIC"
+
+                        if data[server]["gamemode"] == 'Empire':
+                            emoji = '💣'
+                        else: # regicide.. 
+                            emoji = '👑'
+
+                        embed.add_field(
+                            name=f'🖥 **Server {data[server]["id"].upper()} - {serverType}**', 
+                            value=f'{emoji} {data[server]["gamemode"]}\n🕓 {data[server]["elapsedTime"]} - {data[server]["stage"]}\n🔎 {players} ({len(data[server]["players"])}/10 players)', 
+                            inline=False
+                        )
                 
                 await ctx.send(embed=embed)
 
