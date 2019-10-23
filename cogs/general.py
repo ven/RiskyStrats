@@ -236,7 +236,7 @@ class GeneralCog(commands.Cog):
                     colour=discord.Colour.blue(), 
                     timestamp=datetime.datetime.utcnow()
                 )
-
+                
                 embed.set_footer(
                     text=self.bot.user.name, 
                     icon_url=self.bot.user.avatar_url
@@ -270,6 +270,7 @@ class GeneralCog(commands.Cog):
                         )
                 
                 await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(GeneralCog(bot))
