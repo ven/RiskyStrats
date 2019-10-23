@@ -254,9 +254,10 @@ class GeneralCog(commands.Cog):
                         if "players" in data[server].keys():
                             players = ", ".join([x[0] for x in data[server]["players"]]) # string of comma separated player names
                             playerText = ''
-                            playerText = f"\n🔎 {players} ({len(data[server]["players"])}/10 players)"
+                            playerText = f"""\n🔎 {players} ({len(data[server]["players"])}/10 players)"""
 
                         if data[server]["isVip"]:
+
                             serverType = "VIP"
                         else:
                             serverType = "PUBLIC"
