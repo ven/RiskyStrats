@@ -2,8 +2,14 @@
 A Discord Bot for the Risky Strats server.
 
 ## Features
-  * Statistics
-  * Leaderboards (Daily, Weekly, All Time)
+  * __Statistics__
+    * Detailed metrics about player performance.
+    
+  * __Leaderboards (Daily, Weekly, All Time)__
+    * Information about players' total wins.
+    
+  * __Dynamic Server Feed__
+    * Refreshes every 30 seconds to notify users about active servers.
 
 ## Images
 
@@ -14,3 +20,7 @@ A Discord Bot for the Risky Strats server.
 ### Leaderboard
 
 ![Image of Leaderboard](https://i.imgur.com/GeWgcV0.png)
+
+### Dynamic Server Feed (refreshing)
+
+![Image of Server Feed](https://i.imgur.com/4DPmQca.png)
