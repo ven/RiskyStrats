@@ -3,10 +3,84 @@ from discord.ext import commands
 import aiohttp
 import humanize
 import datetime
+import asyncio
+import json
 
 class GeneralCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.FEED_CHANNEL = 636941786664665112 # ID of channel where feed is updated
+        self.bg_task = self.bot.loop.create_task(self.feedUpdate())
+
+    async def feedUpdate(self):
+        while True:
+            await asyncio.sleep(30) # refresh every 5 seconds
+            feedChannel = self.bot.get_channel(self.FEED_CHANNEL) # grab the feed / match channel
+
+            with open(f'settings.json', 'r+') as config: # check if there is an existing message
+                data = json.load(config)
+                message = None
+                if data["feedMessageID"]:
+                    try:
+                        message = await feedChannel.fetch_message(data["feedMessageID"]) # grab the message object abc
+                    except: # message was deleted 
+                        pass
+
+            clvurl = 'http://clv.cloud/risky/getServers'
+
+            async with aiohttp.ClientSession() as session:
+                async with session.get(clvurl) as resp:
+                    data = await resp.json(content_type=None)
+
+                    embed = discord.Embed(
+                        title=f'📋 **Risky Strats Servers**', 
+                        description='A list of information about currently active servers. Refreshes every 30 seconds.', 
+                        colour=discord.Colour.blue(), 
+                        timestamp=datetime.datetime.utcnow()
+                    )
+
+                    if not data["success"]: # not successful, no open servers.
+                        embed.add_field(
+                            name='**No open servers.**', 
+                            value='There are 0 open servers.'
+                        )
+                    else:
+                        data = data["data"]
+
+                        for server in data:
+                            playerText = ''
+
+                            if "players" in data[server].keys():
+                                players = ", ".join([x[0] for x in data[server]["players"]]) # string of comma separated player names
+                                playerText = f"""\n🔎 {players} ({len(data[server]["players"])}/10 players)"""
+
+                            if data[server]["isVip"]:
+                                serverType = "VIP"
+                            else:
+                                serverType = "PUBLIC"
+
+                            if data[server]["gamemode"] == 'Empire':
+                                emoji = '⚔'
+                            else: # regicide.. 
+                                emoji = '👑'
+
+                            embed.add_field(
+                                name=f'🖥 **Server {data[server]["id"].upper()} - {serverType}**', 
+                                value=f'{emoji} {data[server]["gamemode"]}\n🕓 {data[server]["elapsedTime"]} - {data[server]["stage"]} Stage{playerText}', 
+                                inline=False
+                            )
+                    
+                    if not message: # no message, so create a new one and update the json key
+                        msg = await feedChannel.send(embed=embed)
+                        with open(f'settings.json', 'r+') as settings:
+                            data = json.load(settings)
+                            data["feedMessageID"] = msg.id
+
+                        with open(f'settings.json', 'r+') as settings:           
+                            json.dump(data, settings)         
+
+                    else: # there is a message, so edit it instead of creating a new one
+                        await message.edit(embed=embed)
 
     @commands.command(
         name='help',
@@ -258,7 +332,6 @@ class GeneralCog(commands.Cog):
                             playerText = f"""\n🔎 {players} ({len(data[server]["players"])}/10 players)"""
 
                         if data[server]["isVip"]:
-
                             serverType = "VIP"
                         else:
                             serverType = "PUBLIC"
