@@ -70,7 +70,7 @@ class GeneralCog(commands.Cog):
 
                             embed.add_field(
                                 name=f'🖥 **Server {data[server]["id"].upper()} - {serverType}**', 
-                                value=f'{emoji} {data[server]["gamemode"]}\n🕓 {data[server]["elapsedTime"]} - {data[server]["stage"]} Stage{playerText}\n{lastWon}', 
+                                value=f'{emoji} {data[server]["gamemode"]}\n🕓 {data[server]["elapsedTime"]} - {data[server]["stage"]} Stage{playerText}{lastWon}', 
                                 inline=False
                             )
                     
