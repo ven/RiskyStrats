@@ -14,3 +14,7 @@ A Discord Bot for the Risky Strats server.
 ### Leaderboard
 
 ![Image of Leaderboard](https://i.imgur.com/GeWgcV0.png)
+
+### Dynamic Server Feed (refreshing)
+
+![Image of Server Feed](https://i.imgur.com/4DPmQca.png)
