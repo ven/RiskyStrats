@@ -14,10 +14,10 @@ class GeneralCog(commands.Cog):
 
     async def feedUpdate(self):
         while True:
-            await asyncio.sleep(30) # refresh every 5 seconds
+            await asyncio.sleep(15) # refresh every 10 seconds
             feedChannel = self.bot.get_channel(self.FEED_CHANNEL) # grab the feed / match channel
 
-            with open(f'settings.json', 'r+') as config: # check if there is an existing message
+            with open(f'settings.json', 'r+') as config: # check if there is an existing message cached
                 data = json.load(config)
                 message = None
                 if data["feedMessageID"]:
@@ -34,7 +34,7 @@ class GeneralCog(commands.Cog):
 
                     embed = discord.Embed(
                         title=f'📋 **Risky Strats Servers**', 
-                        description='A list of information about currently active servers. Refreshes every 30 seconds.', 
+                        description='A list of information about currently active servers. Refreshes every 15 seconds.', 
                         colour=discord.Colour.blue(), 
                         timestamp=datetime.datetime.utcnow()
                     )
@@ -80,6 +80,9 @@ class GeneralCog(commands.Cog):
                             json.dump(data, settings)         
 
                     else: # there is a message, so edit it instead of creating a new one
+                        loading = discord.Embed(description='<a:loader5:579013375590400031>', colour=discord.Colour.blue())
+                        await message.edit(embed=loading)
+                        await asyncio.sleep(2)
                         await message.edit(embed=embed)
 
     @commands.command(
