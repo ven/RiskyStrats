@@ -49,10 +49,14 @@ class GeneralCog(commands.Cog):
 
                         for server in data:
                             playerText = ''
+                            lastWon = ''
 
                             if "players" in data[server].keys():
                                 players = ", ".join([x[0] for x in data[server]["players"]]) # string of comma separated player names
                                 playerText = f"""\n🔎 {players} ({len(data[server]["players"])}/10 players)"""
+
+                            if "lastWon" in data[server].keys():
+                                lastWon = f"""\n🥇 {data[server]["lastWon"]}"""
 
                             if data[server]["isVip"]:
                                 serverType = "VIP"
@@ -66,7 +70,7 @@ class GeneralCog(commands.Cog):
 
                             embed.add_field(
                                 name=f'🖥 **Server {data[server]["id"].upper()} - {serverType}**', 
-                                value=f'{emoji} {data[server]["gamemode"]}\n🕓 {data[server]["elapsedTime"]} - {data[server]["stage"]} Stage{playerText}', 
+                                value=f'{emoji} {data[server]["gamemode"]}\n🕓 {data[server]["elapsedTime"]} - {data[server]["stage"]} Stage{playerText}\n{lastWon}', 
                                 inline=False
                             )
                     
