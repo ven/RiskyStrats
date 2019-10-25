@@ -14,80 +14,83 @@ class GeneralCog(commands.Cog):
 
     async def feedUpdate(self):
         while True:
-            await asyncio.sleep(15) # refresh every 10 seconds
-            feedChannel = self.bot.get_channel(self.FEED_CHANNEL) # grab the feed / match channel
+            try:
+                await asyncio.sleep(15) # refresh every 10 seconds
+                feedChannel = self.bot.get_channel(self.FEED_CHANNEL) # grab the feed / match channel
 
-            with open(f'settings.json', 'r+') as config: # check if there is an existing message cached
-                data = json.load(config)
-                message = None
-                if data["feedMessageID"]:
-                    try:
-                        message = await feedChannel.fetch_message(data["feedMessageID"]) # grab the message object abc
-                    except: # message was deleted 
-                        pass
+                with open(f'settings.json', 'r+') as config: # check if there is an existing message cached
+                    data = json.load(config)
+                    message = None
+                    if data["feedMessageID"]:
+                        try:
+                            message = await feedChannel.fetch_message(data["feedMessageID"]) # grab the message object abc
+                        except: # message was deleted 
+                            pass
 
-            clvurl = 'http://clv.cloud/risky/getServers'
+                clvurl = 'http://clv.cloud/risky/getServers'
 
-            async with aiohttp.ClientSession() as session:
-                async with session.get(clvurl) as resp:
-                    data = await resp.json(content_type=None)
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(clvurl) as resp:
+                        data = await resp.json(content_type=None)
 
-                    embed = discord.Embed(
-                        title=f'📋 **Risky Strats Servers**', 
-                        description='A list of information about currently active servers. Refreshes every 15 seconds.', 
-                        colour=discord.Colour.blue(), 
-                        timestamp=datetime.datetime.utcnow()
-                    )
-
-                    if not data["success"]: # not successful, no open servers.
-                        embed.add_field(
-                            name='**No open servers.**', 
-                            value='There are 0 open servers.'
+                        embed = discord.Embed(
+                            title=f'📋 **Risky Strats Servers**', 
+                            description='A list of information about currently active servers. Refreshes every 15 seconds.', 
+                            colour=discord.Colour.blue(), 
+                            timestamp=datetime.datetime.utcnow()
                         )
-                    else:
-                        data = data["data"]
 
-                        for server in data:
-                            playerText = ''
-                            lastWon = ''
-
-                            if "players" in data[server].keys():
-                                players = ", ".join([x[0] for x in data[server]["players"]]) # string of comma separated player names
-                                playerText = f"""\n🔎 {players} ({len(data[server]["players"])}/10 players)"""
-
-                            if "lastWon" in data[server].keys():
-                                lastWon = f"""\n🥇 {data[server]["lastWon"]}"""
-
-                            if data[server]["isVip"]:
-                                serverType = "VIP"
-                            else:
-                                serverType = "PUBLIC"
-
-                            if data[server]["gamemode"] == 'Empire':
-                                emoji = '⚔'
-                            else: # regicide.. 
-                                emoji = '👑'
-
+                        if not data["success"]: # not successful, no open servers.
                             embed.add_field(
-                                name=f'🖥 **Server {data[server]["id"].upper()} - {serverType}**', 
-                                value=f'{emoji} {data[server]["gamemode"]}\n🕓 {data[server]["elapsedTime"]} - {data[server]["stage"]} Stage{playerText}{lastWon}', 
-                                inline=False
+                                name='**No open servers.**', 
+                                value='There are 0 open servers.'
                             )
-                    
-                    if not message: # no message, so create a new one and update the json key
-                        msg = await feedChannel.send(embed=embed)
-                        with open(f'settings.json', 'r+') as settings:
-                            data = json.load(settings)
-                            data["feedMessageID"] = msg.id
+                        else:
+                            data = data["data"]
 
-                        with open(f'settings.json', 'r+') as settings:           
-                            json.dump(data, settings)         
+                            for server in data:
+                                playerText = ''
+                                lastWon = ''
 
-                    else: # there is a message, so edit it instead of creating a new one
-                        loading = discord.Embed(description='<a:loader5:579013375590400031>', colour=discord.Colour.blue())
-                        await message.edit(embed=loading)
-                        await asyncio.sleep(2)
-                        await message.edit(embed=embed)
+                                if "players" in data[server].keys():
+                                    players = ", ".join([x[0] for x in data[server]["players"]]) # string of comma separated player names
+                                    playerText = f"""\n🔎 {players} ({len(data[server]["players"])}/10 players)"""
+
+                                if "lastWon" in data[server].keys():
+                                    lastWon = f"""\n🥇 {data[server]["lastWon"]}"""
+
+                                if data[server]["isVip"]:
+                                    serverType = "VIP"
+                                else:
+                                    serverType = "PUBLIC"
+
+                                if data[server]["gamemode"] == 'Empire':
+                                    emoji = '⚔'
+                                else: # regicide.. 
+                                    emoji = '👑'
+
+                                embed.add_field(
+                                    name=f'🖥 **Server {data[server]["id"].upper()} - {serverType}**', 
+                                    value=f'{emoji} {data[server]["gamemode"]}\n🕓 {data[server]["elapsedTime"]} - {data[server]["stage"]} Stage{playerText}{lastWon}', 
+                                    inline=False
+                                )
+                        
+                        if not message: # no message, so create a new one and update the json key
+                            msg = await feedChannel.send(embed=embed)
+                            with open(f'settings.json', 'r+') as settings:
+                                data = json.load(settings)
+                                data["feedMessageID"] = msg.id
+
+                            with open(f'settings.json', 'r+') as settings:           
+                                json.dump(data, settings)         
+
+                        else: # there is a message, so edit it instead of creating a new one
+                            loading = discord.Embed(description='<a:loader5:579013375590400031>', colour=discord.Colour.blue())
+                            await message.edit(embed=loading)
+                            await asyncio.sleep(2)
+                            await message.edit(embed=embed)
+            except Exception as e:
+                print(e) # catch error, discord.py errors silently in bg tasks
 
     @commands.command(
         name='help',
