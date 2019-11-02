@@ -300,64 +300,6 @@ class GeneralCog(commands.Cog):
                 )
 
             await ctx.send(embed=embed)
-    
-    @commands.command(
-        name='servers',
-        aliases=['players'],
-        help="Displays the current Risky Strats servers and player amounts."
-    )
-    async def _servers(self, ctx):
-
-        clvurl = 'http://clv.cloud/risky/getServers'
-
-        async with aiohttp.ClientSession() as session:
-            async with session.get(clvurl) as resp:
-                data = await resp.json(content_type=None)
-
-                embed = discord.Embed(
-                    title=f'📋 **Risky Strats Servers**', 
-                    description='A list of information about currently active servers.', 
-                    colour=discord.Colour.blue(), 
-                    timestamp=datetime.datetime.utcnow()
-                )
-
-                embed.set_footer(
-                    text=self.bot.user.name, 
-                    icon_url=self.bot.user.avatar_url
-                )
-
-                if not data["success"]: # not successful, no open servers.
-                    embed.add_field(
-                        name='**No open servers.**', 
-                        value='There are 0 open servers.'
-                    )
-                else:
-                    data = data["data"]
-
-                    for server in data:
-                        playerText = ''
-
-                        if "players" in data[server].keys():
-                            players = ", ".join([x[0] for x in data[server]["players"]]) # string of comma separated player names
-                            playerText = f"""\n🔎 {players} ({len(data[server]["players"])}/10 players)"""
-
-                        if data[server]["isVip"]:
-                            serverType = "VIP"
-                        else:
-                            serverType = "PUBLIC"
-
-                        if data[server]["gamemode"] == 'Empire':
-                            emoji = '⚔'
-                        else: # regicide.. 
-                            emoji = '👑'
-
-                        embed.add_field(
-                            name=f'🖥 **Server {data[server]["id"].upper()} - {serverType}**', 
-                            value=f'{emoji} {data[server]["gamemode"]}\n🕓 {data[server]["elapsedTime"]} - {data[server]["stage"]} Stage{playerText}', 
-                            inline=False
-                        )
-                
-                await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(GeneralCog(bot))
