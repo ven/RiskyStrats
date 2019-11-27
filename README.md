@@ -1,4 +1,4 @@
-# Risky Strats
+# ⚔️ Risky Strats
 
 <p align="left">
   <img src="https://img.shields.io/github/license/venoras/RiskyStrats">
@@ -7,28 +7,28 @@
   <img src="https://img.shields.io/github/last-commit/venoras/RiskyStrats">
 </p>
 
-A Discord Bot for the Risky Strats server.
+**A Discord Bot for the Risky Strats server.**
 
 ## Features
-  * __Statistics__
+  * 📊 __Statistics__
     * Detailed metrics about player performance.
     
-  * __Leaderboards (Daily, Weekly, All Time)__
+  * 📌 __Leaderboards (Daily, Weekly, All Time)__
     * Information about players' total wins.
     
-  * __Dynamic Server Feed__
+  * 🛰️ __Dynamic Server Feed__
     * Refreshes every 30 seconds to notify users about active servers.
 
 ## Images
 
-### Stats
+### 📊 Statistics
 
 ![Image of Stats](https://i.imgur.com/F9Tgr9K.png)
 
-### Leaderboard
+### 📌 Leaderboard
 
 ![Image of Leaderboard](https://i.imgur.com/GeWgcV0.png)
 
-### Dynamic Server Feed (refreshing)
+### 🛰️ Dynamic Server Feed
 
 ![Image of Server Feed](https://i.imgur.com/4DPmQca.png)
