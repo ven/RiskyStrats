@@ -1,6 +1,6 @@
 # Risky Strats
 
-<p align="center">
+<p align="left">
   <img src="https://img.shields.io/github/license/venoras/RiskyStrats">
   <img src="https://img.shields.io/github/issues-raw/venoras/RiskyStrats">
   <img src="https://img.shields.io/github/repo-size/venoras/RiskyStrats">
