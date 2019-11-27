@@ -1,3 +1,5 @@
+# Risky Strats
+
 <p align="center">
   <img src="https://img.shields.io/github/license/venoras/RiskyStrats">
   <img src="https://img.shields.io/github/issues-raw/venoras/RiskyStrats">
@@ -5,7 +7,6 @@
   <img src="https://img.shields.io/github/last-commit/venoras/RiskyStrats">
 </p>
 
-# Risky Strats
 A Discord Bot for the Risky Strats server.
 
 ## Features
