@@ -190,6 +190,11 @@ class GeneralCog(commands.Cog):
                         data = data["data"]
 
                         Losses = data["TotalMatches"] - data["Wins"]
+                        
+                        try:
+                            WL = round((data["Wins"] / Losses), 2)
+                        except ZeroDivisionError:
+                            WL = data["Wins"]
 
                         embed.add_field(
                             name='🏆 **Wins**', 
@@ -208,7 +213,7 @@ class GeneralCog(commands.Cog):
 
                         embed.add_field(
                             name='📈 **W/L Ratio**', 
-                            value=round((data["Wins"] / Losses), 2)
+                            value=WL
                         )
 
                         embed.add_field(
